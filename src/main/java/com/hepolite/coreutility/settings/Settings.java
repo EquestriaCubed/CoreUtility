@@ -2,6 +2,7 @@ package com.hepolite.coreutility.settings;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,6 +32,7 @@ import com.hepolite.coreutility.apis.nbt.NBTTag;
 import com.hepolite.coreutility.log.Log;
 import com.hepolite.coreutility.plugin.CorePlugin;
 import com.hepolite.coreutility.util.InventoryHelper;
+import com.hepolite.coreutility.util.StringHelper;
 
 public abstract class Settings
 {
@@ -125,16 +127,20 @@ public abstract class Settings
 	/** Assigns one default value to the calling configuration class */
 	public final void set(String propertyName, Object value)
 	{
-		if (value instanceof SoundSetting)
+		if (value instanceof NBTTag)
+			set(propertyName, (NBTTag) value);
+		else if (value instanceof NBTList)
+			set(propertyName, (NBTList) value);
+		else if (value instanceof ItemStack)
+			set(propertyName, (ItemStack) value);
+		else if (value instanceof ItemStack[])
+			set(propertyName, (ItemStack[]) value);
+		else if (value instanceof SoundSetting)
 			set(propertyName, (SoundSetting) value);
 		else if (value instanceof PotionEffectSetting)
 			set(propertyName, (PotionEffectSetting) value);
 		else if (value instanceof PotionEffectSetting[])
 			set(propertyName, (PotionEffectSetting[]) value);
-		else if (value instanceof ItemStack)
-			set(propertyName, (ItemStack) value);
-		else if (value instanceof ItemStack[])
-			set(propertyName, (ItemStack[]) value);
 		else if (value instanceof PotionEffectType)
 			set(propertyName, (PotionEffectType) value);
 		else if (value instanceof PotionEffectType[])
@@ -147,27 +153,39 @@ public abstract class Settings
 			set(propertyName, (EntityType) value);
 		else if (value instanceof EntityType[])
 			set(propertyName, (EntityType[]) value);
-		else if (value instanceof NBTTag)
-			set(propertyName, (NBTTag) value);
-		else if (value instanceof NBTList)
-			set(propertyName, (NBTList) value);
+		else if (value instanceof byte[])
+			set(propertyName, (byte[]) value);
+		else if (value instanceof int[])
+			set(propertyName, (int[]) value);
 		else
 			config.set(propertyName, value);
 	}
 
+	private final void set(String propertyName, byte[] array)
+	{
+		String data = Arrays.toString(array).replaceAll(",", "");
+		set(propertyName, data.substring(1, data.length() - 1));
+	}
+
+	private final void set(String propertyName, int[] array)
+	{
+		String data = Arrays.toString(array).replaceAll(",", "");
+		set(propertyName, data.substring(1, data.length() - 1));
+	}
+
 	private final void set(String propertyName, SoundSetting setting)
 	{
-		config.set(propertyName + ".enable", setting.enable);
-		config.set(propertyName + ".sound", setting.sound.toString().toLowerCase());
-		config.set(propertyName + ".volume", setting.volume);
-		config.set(propertyName + ".pitch", setting.pitch);
+		set(propertyName + ".enable", setting.enable);
+		set(propertyName + ".sound", setting.sound.toString().toLowerCase());
+		set(propertyName + ".volume", setting.volume);
+		set(propertyName + ".pitch", setting.pitch);
 	}
 
 	private final void set(String propertyName, PotionEffectSetting setting)
 	{
-		config.set(propertyName + ".type", setting.type.getName().toLowerCase());
-		config.set(propertyName + ".duration", setting.duration);
-		config.set(propertyName + ".amplifier", setting.amplifier);
+		set(propertyName + ".type", setting.type.getName().toLowerCase());
+		set(propertyName + ".duration", setting.duration);
+		set(propertyName + ".amplifier", setting.amplifier);
 	}
 
 	private final void set(String propertyName, PotionEffectSetting[] setting)
@@ -178,14 +196,13 @@ public abstract class Settings
 
 	private final void set(String propertyName, ItemStack item)
 	{
-		config.set(propertyName + ".type", item.getType().toString().toLowerCase());
-		config.set(propertyName + ".amount", item.getAmount());
-		config.set(propertyName + ".meta", item.getDurability());
+		set(propertyName + ".type", item.getType().toString().toLowerCase());
+		set(propertyName + ".amount", item.getAmount());
+		set(propertyName + ".meta", item.getDurability());
 
 		ItemMeta meta = item.getItemMeta();
-		config.set(propertyName + ".name", meta == null ? null : meta.getDisplayName());
-		config.set(propertyName + ".lore", meta == null ? null : meta.getLore());
-
+		set(propertyName + ".name", meta == null ? null : meta.getDisplayName());
+		set(propertyName + ".lore", meta == null ? null : meta.getLore());
 		set(propertyName + ".nbt", NBTAPI.hasTag(item) ? NBTAPI.getTag(item) : null);
 	}
 
@@ -197,7 +214,7 @@ public abstract class Settings
 
 	private final void set(String propertyName, PotionEffectType setting)
 	{
-		config.set(propertyName, setting.getName().toLowerCase());
+		set(propertyName, setting.getName().toLowerCase());
 	}
 
 	private final void set(String propertyName, PotionEffectType[] setting)
@@ -205,12 +222,12 @@ public abstract class Settings
 		List<String> types = new LinkedList<String>();
 		for (PotionEffectType type : setting)
 			types.add(type.getName().toLowerCase());
-		config.set(propertyName, types);
+		set(propertyName, types);
 	}
 
 	private final void set(String propertyName, Enchantment setting)
 	{
-		config.set(propertyName, setting.getName().toLowerCase());
+		set(propertyName, setting.getName().toLowerCase());
 	}
 
 	private final void set(String propertyName, Enchantment[] setting)
@@ -218,12 +235,12 @@ public abstract class Settings
 		List<String> types = new LinkedList<String>();
 		for (Enchantment enchantment : setting)
 			types.add(enchantment.getName().toLowerCase());
-		config.set(propertyName, types);
+		set(propertyName, types);
 	}
 
 	private final void set(String propertyName, EntityType setting)
 	{
-		config.set(propertyName, setting.toString().toLowerCase());
+		set(propertyName, setting.toString().toLowerCase());
 	}
 
 	private final void set(String propertyName, EntityType[] setting)
@@ -231,7 +248,7 @@ public abstract class Settings
 		List<String> types = new LinkedList<String>();
 		for (EntityType entityType : setting)
 			types.add(entityType.toString().toLowerCase());
-		config.set(propertyName, types);
+		set(propertyName, types);
 	}
 
 	public final void set(String property, NBTTag tag)
@@ -251,6 +268,9 @@ public abstract class Settings
 			case BYTE:
 				set(path + "=BYTE", tag.getByte(key));
 				break;
+			case BYTE_ARRAY:
+				set(path + "=BYTE_ARRAY", tag.getByteArray(key));
+				break;
 			case DOUBLE:
 				set(path + "=DOUBLE", tag.getDouble(key));
 				break;
@@ -260,8 +280,10 @@ public abstract class Settings
 			case INT:
 				set(path + "=INT", tag.getInt(key));
 				break;
+			case INT_ARRAY:
+				set(path + "=INT_ARRAY", tag.getIntArray(key));
+				break;
 			case LIST:
-				Log.debug("Storing list " + tag.getList(key) + " at path " + path);
 				set(path + "=LIST", tag.getList(key));
 				break;
 			case LONG:
@@ -271,11 +293,9 @@ public abstract class Settings
 				set(path + "=SHORT", tag.getShort(key));
 				break;
 			case STRING:
-				Log.debug("Storing list " + tag.getString(key) + " at path " + path);
 				set(path + "=STRING", tag.getString(key));
 				break;
 			case TAG:
-				Log.debug("Storing list " + tag.getTag(key) + " at path " + path);
 				set(path + "=TAG", tag.getTag(key));
 				break;
 			default:
@@ -301,6 +321,9 @@ public abstract class Settings
 			case BYTE:
 				set(path + "=BYTE", tag.getByte(i));
 				break;
+			case BYTE_ARRAY:
+				set(path + "=BYTE_ARRAY", tag.getByteArray(i));
+				break;
 			case DOUBLE:
 				set(path + "=DOUBLE", tag.getDouble(i));
 				break;
@@ -309,6 +332,9 @@ public abstract class Settings
 				break;
 			case INT:
 				set(path + "=INT", tag.getInt(i));
+				break;
+			case INT_ARRAY:
+				set(path + "=INT_ARRAY", tag.getIntArray(i));
 				break;
 			case LIST:
 				set(path + "=LIST", tag.getList(i));
@@ -320,11 +346,9 @@ public abstract class Settings
 				set(path + "=SHORT", tag.getShort(i));
 				break;
 			case STRING:
-				Log.debug("Storing string " + tag.getString(i) + " at path " + path);
 				set(path + "=STRING", tag.getString(i));
 				break;
 			case TAG:
-				Log.debug("Storing tag " + tag.getTag(i) + " at path " + path);
 				set(path + "=TAG", tag.getTag(i));
 				break;
 			default:
@@ -357,42 +381,6 @@ public abstract class Settings
 		return has(propertyName) ? getBool(propertyName) : def;
 	}
 
-	/** Returns a long value from the config file */
-	public final long getLong(String propertyName)
-	{
-		return config.getLong(propertyName);
-	}
-
-	/** Returns a long value from the config file */
-	public final long getLong(String propertyName, long def)
-	{
-		return has(propertyName) ? getLong(propertyName) : def;
-	}
-
-	/** Returns an integer value from the config file */
-	public final int getInt(String propertyName)
-	{
-		return config.getInt(propertyName);
-	}
-
-	/** Returns an integer value from the config file */
-	public final int getInt(String propertyName, int def)
-	{
-		return has(propertyName) ? getInt(propertyName) : def;
-	}
-
-	/** Returns a short value from the config file */
-	public final short getShort(String propertyName)
-	{
-		return (short) config.getInt(propertyName);
-	}
-
-	/** Returns a short value from the config file */
-	public final short getShort(String propertyName, short def)
-	{
-		return has(propertyName) ? getShort(propertyName) : def;
-	}
-
 	/** Returns a byte value from the config file */
 	public final byte getByte(String propertyName)
 	{
@@ -403,6 +391,37 @@ public abstract class Settings
 	public final byte getByte(String propertyName, byte def)
 	{
 		return has(propertyName) ? getByte(propertyName) : def;
+	}
+
+	/** Returns a byte array value from the config file */
+	public final byte[] getByteArray(String propertyName)
+	{
+		String data = getString(propertyName);
+		if (data == null)
+			return new byte[] {};
+		String[] split = data.split(" ");
+		byte[] bytes = new byte[split.length];
+		for (int i = 0; i < split.length; ++i)
+			bytes[i] = StringHelper.asByte(split[i]);
+		return bytes;
+	}
+
+	/** Returns a byte array value from the config file */
+	public final byte[] getByteArray(String propertyName, byte[] def)
+	{
+		return has(propertyName) ? getByteArray(propertyName) : def;
+	}
+
+	/** Returns a double point value from the config file */
+	public final double getDouble(String propertyName)
+	{
+		return config.getDouble(propertyName);
+	}
+
+	/** Returns a double point value from the config file */
+	public final double getDouble(String propertyName, double def)
+	{
+		return has(propertyName) ? getDouble(propertyName) : def;
 	}
 
 	/** Returns a floating point value from the config file */
@@ -417,16 +436,59 @@ public abstract class Settings
 		return has(propertyName) ? getFloat(propertyName) : def;
 	}
 
-	/** Returns a double point value from the config file */
-	public final double getDouble(String propertyName)
+	/** Returns an integer value from the config file */
+	public final int getInt(String propertyName)
 	{
-		return config.getDouble(propertyName);
+		return config.getInt(propertyName);
 	}
 
-	/** Returns a double point value from the config file */
-	public final double getDouble(String propertyName, double def)
+	/** Returns an integer value from the config file */
+	public final int getInt(String propertyName, int def)
 	{
-		return has(propertyName) ? getDouble(propertyName) : def;
+		return has(propertyName) ? getInt(propertyName) : def;
+	}
+
+	/** Returns an integer value from the config file */
+	public final int[] getIntArray(String propertyName)
+	{
+		String data = getString(propertyName);
+		if (data == null)
+			return new int[] {};
+		String[] split = data.split(" ");
+		int[] ints = new int[split.length];
+		for (int i = 0; i < split.length; ++i)
+			ints[i] = StringHelper.asInt(split[i]);
+		return ints;
+	}
+
+	/** Returns an integer value from the config file */
+	public final int[] getIntArray(String propertyName, int[] def)
+	{
+		return has(propertyName) ? getIntArray(propertyName) : def;
+	}
+
+	/** Returns a long value from the config file */
+	public final long getLong(String propertyName)
+	{
+		return config.getLong(propertyName);
+	}
+
+	/** Returns a long value from the config file */
+	public final long getLong(String propertyName, long def)
+	{
+		return has(propertyName) ? getLong(propertyName) : def;
+	}
+
+	/** Returns a short value from the config file */
+	public final short getShort(String propertyName)
+	{
+		return (short) config.getInt(propertyName);
+	}
+
+	/** Returns a short value from the config file */
+	public final short getShort(String propertyName, short def)
+	{
+		return has(propertyName) ? getShort(propertyName) : def;
 	}
 
 	/** Returns a string from the config file */
@@ -476,7 +538,7 @@ public abstract class Settings
 	public final PotionEffectSetting getPotionEffect(String propertyName)
 	{
 		PotionEffectType type = PotionEffectType.getByName(getString(propertyName + ".type").toUpperCase());
-		int duration = getInt(propertyName + ".duration");
+		float duration = getFloat(propertyName + ".duration");
 		int amplifier = getInt(propertyName + ".amplifier");
 		return new PotionEffectSetting(type, duration, amplifier);
 	}
@@ -568,7 +630,7 @@ public abstract class Settings
 		Material material = null;
 		try
 		{
-			material = Material.getMaterial(config.getString(propertyName + ".type").toUpperCase());
+			material = Material.getMaterial(getString(propertyName + ".type").toUpperCase());
 			if (material == null)
 				throw new NullPointerException("Invalid material!");
 		}
@@ -578,12 +640,12 @@ public abstract class Settings
 			Log.warning(exception.getMessage());
 			return null;
 		}
-		int amount = config.contains(propertyName + ".amount") ? config.getInt(propertyName + ".amount") : 1;
-		short meta = (short) config.getInt(propertyName + ".meta");
+		int amount = getInt(propertyName + ".amount", 1);
+		short meta = getShort(propertyName + ".meta");
 		if (meta == -1)
 			meta = InventoryHelper.ANY_META;
-		String name = config.getString(propertyName + ".name");
-		List<String> lore = config.getStringList(propertyName + ".lore");
+		String name = getString(propertyName + ".name");
+		List<String> lore = getStringList(propertyName + ".lore");
 
 		// Actually create the item
 		ItemStack item = NBTAPI.getItemStack(material, amount, meta);
@@ -640,6 +702,9 @@ public abstract class Settings
 			case BYTE:
 				tag.setByte(key, getByte(path));
 				break;
+			case BYTE_ARRAY:
+				tag.setByteArray(key, getByteArray(path));
+				break;
 			case DOUBLE:
 				tag.setDouble(key, getDouble(path));
 				break;
@@ -648,6 +713,9 @@ public abstract class Settings
 				break;
 			case INT:
 				tag.setInt(key, getInt(path));
+				break;
+			case INT_ARRAY:
+				tag.setIntArray(key, getIntArray(path));
 				break;
 			case LIST:
 				tag.setList(key, getNBTList(path));
@@ -693,6 +761,9 @@ public abstract class Settings
 			case BYTE:
 				tag.addByte(getByte(path));
 				break;
+			case BYTE_ARRAY:
+				tag.addByteArray(getByteArray(path));
+				break;
 			case DOUBLE:
 				tag.addDouble(getDouble(path));
 				break;
@@ -701,6 +772,9 @@ public abstract class Settings
 				break;
 			case INT:
 				tag.addInt(getInt(path));
+				break;
+			case INT_ARRAY:
+				tag.addIntArray(getIntArray(path));
 				break;
 			case LIST:
 				tag.addList(getNBTList(path));
@@ -820,7 +894,7 @@ public abstract class Settings
 	// ///////////////////////////////////////////////////////////////////////////////////////////
 
 	/** Sound data node, used to store a sound object to the config file */
-	public final static class SoundSetting
+	public static final class SoundSetting
 	{
 		public boolean enable;
 		public Sound sound;
@@ -844,14 +918,14 @@ public abstract class Settings
 	}
 
 	/** Potion effect data node, used to store a potion effect object to the config file */
-	public final static class PotionEffectSetting
+	public static final class PotionEffectSetting
 	{
 		public PotionEffectType type;
-		public int duration;
+		public float duration;
 		public int amplifier;
 		public float chance;
 
-		public PotionEffectSetting(PotionEffectType type, int duration, int amplifier)
+		public PotionEffectSetting(PotionEffectType type, float duration, int amplifier)
 		{
 			this.type = type;
 			this.duration = duration;
@@ -862,7 +936,7 @@ public abstract class Settings
 		public final PotionEffect create()
 		{
 			if (type != null)
-				return new PotionEffect(type, duration, amplifier - 1);
+				return new PotionEffect(type, (int) (20.0f * duration), amplifier > 0 ? amplifier - 1 : amplifier);
 			return null;
 		}
 	}

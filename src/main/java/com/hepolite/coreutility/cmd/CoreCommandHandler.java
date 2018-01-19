@@ -13,16 +13,16 @@ import org.bukkit.command.CommandSender;
 import com.hepolite.coreutility.log.Log;
 import com.hepolite.coreutility.plugin.CorePlugin;
 
-public class CommandHandler implements CommandExecutor
+public class CoreCommandHandler implements CommandExecutor
 {
 	private Map<String, Instruction> instructions = new TreeMap<String, Instruction>();
 
-	public CommandHandler(CorePlugin plugin, String name)
+	public CoreCommandHandler(CorePlugin plugin, String name)
 	{
 		plugin.getCommand(name).setExecutor(this);
 		registerInstruction(new InstructionHelp(this, name));
 	}
-	
+
 	/** Registers a new instruction for use */
 	public final void registerInstruction(final Instruction instruction)
 	{

@@ -22,8 +22,8 @@ import org.bukkit.util.Vector;
 
 import com.hepolite.coreutility.apis.attributes.Attribute;
 import com.hepolite.coreutility.apis.attributes.AttributeAPI;
-import com.hepolite.coreutility.apis.attributes.AttributeModifier;
-import com.hepolite.coreutility.apis.attributes.AttributeType;
+import com.hepolite.coreutility.apis.attributes.Modifier;
+import com.hepolite.coreutility.apis.attributes.Attributes;
 import com.hepolite.coreutility.event.CoreHandler;
 import com.hepolite.coreutility.event.events.DamageEvent;
 import com.hepolite.coreutility.log.Log;
@@ -162,7 +162,7 @@ public class DamageAPI extends CoreHandler
 		return true;
 	}
 	
-	/** Applies a knockback to the target entity, from the given location */
+	/** Applies a knockback to the target entity, from the given location; values are measured in m/s */
 	public static final void applyKnockback(LivingEntity target, Location origin, float strength,
 			float lift)
 	{
@@ -170,13 +170,13 @@ public class DamageAPI extends CoreHandler
 		delta.setY(0.0);
 		if (delta.lengthSquared() > 0.001)
 			delta.normalize();
-		target.setVelocity(target.getVelocity().add(delta.multiply(strength))
-				.add(new Vector(0.0f, lift, 0.0f)));
+		target.setVelocity(target.getVelocity().add(delta.multiply(0.05f * strength))
+				.add(new Vector(0.0f, 0.05f * lift, 0.0f)));
 	}
 
 	// ////////////////////////////////////////////////////////
 
-	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = false)
 	public final void onEntityTakeDamage(EntityDamageEvent event)
 	{
 		if (customEvent)
@@ -324,8 +324,9 @@ public class DamageAPI extends CoreHandler
 		else
 			currentDamage.setAmount((float) event.getDamage());
 
-		DamageEvent damageEvent = (DamageEvent) post(new DamageEvent(target, attacker,
-				currentDamage));
+		DamageEvent damageEvent = new DamageEvent(target, attacker, currentDamage);
+		damageEvent.setCancelled(event.isCancelled());
+		post(damageEvent);
 		event.setDamage(damageEvent.getDamage().getAmount());
 		if (damageEvent.isCancelled())
 			event.setCancelled(true);
@@ -349,13 +350,13 @@ public class DamageAPI extends CoreHandler
 
 		// ////////////////////////////////////////////////////////////////
 
-		Attribute defenceAll = AttributeAPI.get(target, AttributeType.DEFENCE_ALL);
+		Attribute defenceAll = AttributeAPI.get(target, Attributes.DEFENCE_ALL);
 		Attribute defenceSpecificClass = AttributeAPI.get(target,
-				AttributeType.DEFENCE_CLASS(damageClass));
+				Attributes.DEFENCE_CLASS(damageClass));
 		Attribute defenceSpecificType = AttributeAPI.get(target,
-				AttributeType.DEFENCE_TYPE(damageType));
+				Attributes.DEFENCE_TYPE(damageType));
 
-		AttributeModifier defenceModifier = damageModifier.getModifier("defence");
+		Modifier defenceModifier = damageModifier.getModifier("defence");
 		defenceModifier
 				.setScale(1.0f / (defenceAll.getScale() * defenceSpecificClass.getScale() * defenceSpecificType
 						.getScale()) - 1.0f);
@@ -369,13 +370,13 @@ public class DamageAPI extends CoreHandler
 		if (attacker == null)
 			return;
 
-		Attribute attackAll = AttributeAPI.get(attacker, AttributeType.ATTACK_ALL);
+		Attribute attackAll = AttributeAPI.get(attacker, Attributes.ATTACK_ALL);
 		Attribute attackSpecificClass = AttributeAPI.get(attacker,
-				AttributeType.ATTACK_CLASS(damageClass));
+				Attributes.ATTACK_CLASS(damageClass));
 		Attribute attackSpecificType = AttributeAPI.get(attacker,
-				AttributeType.ATTACK_TYPE(damageType));
+				Attributes.ATTACK_TYPE(damageType));
 
-		AttributeModifier attackClassModifier = damageModifier.getModifier("attack");
+		Modifier attackClassModifier = damageModifier.getModifier("attack");
 		attackClassModifier.setScale(attackAll.getScale() * attackSpecificClass.getScale()
 				* attackSpecificType.getScale() - 1.0f);
 		attackClassModifier.setMultiplier(attackAll.getMultiplier()

@@ -8,7 +8,7 @@ import org.bukkit.plugin.Plugin;
 
 import com.hepolite.coreutility.apis.attributes.AttributeAPI;
 import com.hepolite.coreutility.apis.damage.DamageAPI;
-import com.hepolite.coreutility.cmd.CommandHandler;
+import com.hepolite.coreutility.cmd.CoreCommandHandler;
 import com.hepolite.coreutility.cmd.InstructionDebug;
 import com.hepolite.coreutility.cmd.InstructionReload;
 import com.hepolite.coreutility.hunger.HungerHandler;
@@ -47,14 +47,14 @@ public class CoreUtility extends CorePlugin
 		@SuppressWarnings("unused")
 		AttributeAPI attributeAPI = new AttributeAPI();
 		@SuppressWarnings("unused")
-		DamageAPI damageAPI = (DamageAPI) addHandler(new DamageAPI());
+		DamageAPI damageAPI = addHandler(new DamageAPI());
 
 		// Set up helpers
 		@SuppressWarnings("unused")
 		EffectHelper effectHelper = new EffectHelper(this);
 
 		// Set up handles
-		CommandHandler commandHandler = setCommandHandler(new CommandHandler(this, "cu"));
+		CoreCommandHandler commandHandler = setCommandHandler(new CoreCommandHandler(this, "cu"));
 		commandHandler.registerInstruction(new InstructionReload(this, "coreutility.cu"));
 		commandHandler.registerInstruction(new InstructionDebug(this));
 

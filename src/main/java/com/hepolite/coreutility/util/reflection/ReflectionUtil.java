@@ -59,12 +59,16 @@ public class ReflectionUtil
 		RNBTTag.Base.nmsClass = getNMSClass("NBTBase");
 		RNBTTag.Byte.nmsClass = getNMSClass("NBTTagByte");
 		RNBTTag.Byte.nmsAsByte = getNMSMethod(RNBTTag.Byte.nmsClass, "asByte");
+		RNBTTag.ByteArray.nmsClass = getNMSClass("NBTTagByteArray");
+		RNBTTag.ByteArray.nmsAsByteArray = getNMSMethod(RNBTTag.ByteArray.nmsClass, "asByteArray");
 		RNBTTag.Compound.nmsClass = getNMSClass("NBTTagCompound");
 		RNBTTag.Compound.nmsGetByte = getNMSMethod(RNBTTag.Compound.nmsClass, "getByte", String.class);
+		RNBTTag.Compound.nmsGetByteArray = getNMSMethod(RNBTTag.Compound.nmsClass, "getByteArray", String.class);
 		RNBTTag.Compound.nmsGetCompound = getNMSMethod(RNBTTag.Compound.nmsClass, "getCompound", String.class);
 		RNBTTag.Compound.nmsGetDouble = getNMSMethod(RNBTTag.Compound.nmsClass, "getDouble", String.class);
 		RNBTTag.Compound.nmsGetFloat = getNMSMethod(RNBTTag.Compound.nmsClass, "getFloat", String.class);
 		RNBTTag.Compound.nmsGetInt = getNMSMethod(RNBTTag.Compound.nmsClass, "getInt", String.class);
+		RNBTTag.Compound.nmsGetIntArray = getNMSMethod(RNBTTag.Compound.nmsClass, "getIntArray", String.class);
 		RNBTTag.Compound.nmsGetKeys = getNMSMethod(RNBTTag.Compound.nmsClass, "getKeys");
 		RNBTTag.Compound.nmsGetLong = getNMSMethod(RNBTTag.Compound.nmsClass, "getLong", String.class);
 		RNBTTag.Compound.nmsGetShort = getNMSMethod(RNBTTag.Compound.nmsClass, "getShort", String.class);
@@ -73,9 +77,11 @@ public class ReflectionUtil
 		RNBTTag.Compound.nmsHasKey = getNMSMethod(RNBTTag.Compound.nmsClass, "hasKey", String.class);
 		RNBTTag.Compound.nmsRemove = getNMSMethod(RNBTTag.Compound.nmsClass, "remove", String.class);
 		RNBTTag.Compound.nmsSetByte = getNMSMethod(RNBTTag.Compound.nmsClass, "setByte", String.class, byte.class);
+		RNBTTag.Compound.nmsSetByteArray = getNMSMethod(RNBTTag.Compound.nmsClass, "setByteArray", String.class, byte[].class);
 		RNBTTag.Compound.nmsSetDouble = getNMSMethod(RNBTTag.Compound.nmsClass, "setDouble", String.class, double.class);
 		RNBTTag.Compound.nmsSetFloat = getNMSMethod(RNBTTag.Compound.nmsClass, "setFloat", String.class, float.class);
 		RNBTTag.Compound.nmsSetInt = getNMSMethod(RNBTTag.Compound.nmsClass, "setInt", String.class, int.class);
+		RNBTTag.Compound.nmsSetIntArray = getNMSMethod(RNBTTag.Compound.nmsClass, "setIntArray", String.class, int[].class);
 		RNBTTag.Compound.nmsSetLong = getNMSMethod(RNBTTag.Compound.nmsClass, "setLong", String.class, long.class);
 		RNBTTag.Compound.nmsSetShort = getNMSMethod(RNBTTag.Compound.nmsClass, "setShort", String.class, short.class);
 		RNBTTag.Compound.nmsSetString = getNMSMethod(RNBTTag.Compound.nmsClass, "setString", String.class, String.class);
@@ -86,6 +92,8 @@ public class ReflectionUtil
 		RNBTTag.Float.nmsAsFloat = getNMSMethod(RNBTTag.Float.nmsClass, "asFloat");
 		RNBTTag.Int.nmsClass = getNMSClass("NBTTagInt");
 		RNBTTag.Int.nmsAsInt = getNMSMethod(RNBTTag.Int.nmsClass, "asInt");
+		RNBTTag.IntArray.nmsClass = getNMSClass("NBTTagIntArray");
+		RNBTTag.IntArray.nmsAsIntArray = getNMSMethod(RNBTTag.IntArray.nmsClass, "asIntArray");
 		RNBTTag.List.nmsClass = getNMSClass("NBTTagList");
 		RNBTTag.List.nmsAdd = getNMSMethod(RNBTTag.List.nmsClass, "add", RNBTTag.Base.nmsClass.getHandle());
 		RNBTTag.List.nmsGet = getNMSMethod(RNBTTag.List.nmsClass, "get", int.class);

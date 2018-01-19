@@ -9,10 +9,10 @@ import org.bukkit.command.CommandSender;
 public class InstructionHelp extends Instruction
 {
 	private final int INSTRUCTIONS_PER_PAGE = 15;
-	private final CommandHandler handler;
+	private final CoreCommandHandler handler;
 	private final String name;
 
-	public InstructionHelp(CommandHandler handler, String name)
+	public InstructionHelp(CoreCommandHandler handler, String name)
 	{
 		super("Help", -1);
 		this.handler = handler;

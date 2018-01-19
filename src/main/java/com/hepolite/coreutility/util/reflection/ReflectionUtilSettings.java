@@ -54,12 +54,16 @@ public class ReflectionUtilSettings extends Settings
 		set(version + ".NBTBase.class", "NBTBase");
 		set(version + ".NBTTagByte.class", "NBTTagByte");
 		set(version + ".NBTTagByte.method.asByte", "asByte");
+		set(version + ".NBTTagByteArray.class", "NBTTagByteArray");
+		set(version + ".NBTTagByteArray.method.asByteArray", "asByteArray");
 		set(version + ".NBTTagCompound.class", "NBTTagCompound");
 		set(version + ".NBTTagCompound.method.getByte", "getByte");
+		set(version + ".NBTTagCompound.method.getByteArray", "getByteArray");
 		set(version + ".NBTTagCompound.method.getCompound", "getCompound");
 		set(version + ".NBTTagCompound.method.getDouble", "getDouble");
 		set(version + ".NBTTagCompound.method.getFloat", "getFloat");
 		set(version + ".NBTTagCompound.method.getInt", "getInt");
+		set(version + ".NBTTagCompound.method.getIntArray", "getIntArray");
 		set(version + ".NBTTagCompound.method.getKeys", "getKeys");
 		set(version + ".NBTTagCompound.method.getLong", "getLong");
 		set(version + ".NBTTagCompound.method.getShort", "getShort");
@@ -68,9 +72,11 @@ public class ReflectionUtilSettings extends Settings
 		set(version + ".NBTTagCompound.method.hasKey", "hasKey");
 		set(version + ".NBTTagCompound.method.remove", "remove");
 		set(version + ".NBTTagCompound.method.setByte", "setByte");
+		set(version + ".NBTTagCompound.method.setByteArray", "setByteArray");
 		set(version + ".NBTTagCompound.method.setDouble", "setDouble");
 		set(version + ".NBTTagCompound.method.setFloat", "setFloat");
 		set(version + ".NBTTagCompound.method.setInt", "setInt");
+		set(version + ".NBTTagCompound.method.setIntArray", "setIntArray");
 		set(version + ".NBTTagCompound.method.setLong", "setLong");
 		set(version + ".NBTTagCompound.method.setShort", "setShort");
 		set(version + ".NBTTagCompound.method.setString", "setString");
@@ -81,6 +87,8 @@ public class ReflectionUtilSettings extends Settings
 		set(version + ".NBTTagFloat.method.asFloat", "asFloat");
 		set(version + ".NBTTagInt.class", "NBTTagInt");
 		set(version + ".NBTTagInt.method.asInt", "asInt");
+		set(version + ".NBTTagIntArray.class", "NBTTagIntArray");
+		set(version + ".NBTTagIntArray.method.asInt", "asIntArray");
 		set(version + ".NBTTagList.class", "NBTTagList");
 		set(version + ".NBTTagList.method.add", "add");
 		set(version + ".NBTTagList.method.get", "get");
@@ -119,11 +127,13 @@ public class ReflectionUtilSettings extends Settings
 		set(version + ".Entity.method.load", "f");
 
 		set(version + ".NBTTagByte.method.asByte", "g");
+		set(version + ".NBTTagByteArray.method.asByteArray", "c");
 		set(version + ".NBTTagCompound.method.getTag", "get");
 		set(version + ".NBTTagCompound.method.getKeys", "c");
 		set(version + ".NBTTagCompound.method.setTag", "set");
 		set(version + ".NBTTagFloat.method.asFloat", "i");
 		set(version + ".NBTTagInt.method.asInt", "e");
+		set(version + ".NBTTagIntArray.method.asIntArray", "d");
 		set(version + ".NBTTagList.method.get", "h");
 		set(version + ".NBTTagLong.method.asLong", "d");
 		set(version + ".NBTTagShort.method.asShort", "f");
@@ -135,22 +145,24 @@ public class ReflectionUtilSettings extends Settings
 	{
 		final String version = "v1_12_R1";
 		addDefaultMappings(version);
-		
+
 		set(version + ".AxisAlignedBB.field.minX", "a");
 		set(version + ".AxisAlignedBB.field.minY", "b");
 		set(version + ".AxisAlignedBB.field.minZ", "c");
 		set(version + ".AxisAlignedBB.field.maxX", "d");
 		set(version + ".AxisAlignedBB.field.maxY", "e");
 		set(version + ".AxisAlignedBB.field.maxZ", "f");
-		
+
 		set(version + ".Entity.method.load", "f");
-		
+
 		set(version + ".NBTTagByte.method.asByte", "g");
+		set(version + ".NBTTagByteArray.method.asByteArray", "c");
 		set(version + ".NBTTagCompound.method.getTag", "get");
 		set(version + ".NBTTagCompound.method.getKeys", "c");
 		set(version + ".NBTTagCompound.method.setTag", "set");
 		set(version + ".NBTTagFloat.method.asFloat", "i");
 		set(version + ".NBTTagInt.method.asInt", "e");
+		set(version + ".NBTTagIntArray.method.asIntArray", "d");
 		set(version + ".NBTTagList.method.get", "i");
 		set(version + ".NBTTagLong.method.asLong", "d");
 		set(version + ".NBTTagShort.method.asShort", "f");

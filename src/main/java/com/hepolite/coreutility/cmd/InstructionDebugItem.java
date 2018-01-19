@@ -65,5 +65,4 @@ public class InstructionDebugItem extends Instruction
 		}
 		return false;
 	}
-
 }

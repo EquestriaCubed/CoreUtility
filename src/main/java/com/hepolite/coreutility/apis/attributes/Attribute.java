@@ -1,92 +1,104 @@
 package com.hepolite.coreutility.apis.attributes;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 public class Attribute
 {
-	private final String name;
+	private final String id;
 	private final UUID uuid;
-	private final Map<String, AttributeModifier> modifiers = new HashMap<String, AttributeModifier>();
+	private final Map<String, Modifier> modifiers = new HashMap<String, Modifier>();
 
 	private float baseValue = 0.0f;
 	private float maxValue = Float.MAX_VALUE;
 	private float minValue = -Float.MAX_VALUE;
 
-	public Attribute(String name, UUID uuid)
+	public Attribute(String id, UUID uuid)
 	{
-		this.name = name;
+		this.id = id;
 		this.uuid = uuid;
 	}
 
-	/** Returns the name of the node */
-	public final String getName()
+	/** Returns the identifier of the attribute node */
+	public final String getID()
 	{
-		return name;
+		return id;
 	}
 
-	/** Returns the UUID associated with the node */
+	/** Returns the UUID associated with the attribute node */
 	public final UUID getUUID()
 	{
 		return uuid;
 	}
 
-	/** Returns the player associated with the node */
-	public final Player getPlayer()
+	/** Returns the entity associated with the attribute node */
+	public final Optional<LivingEntity> getEntity()
 	{
-		return Bukkit.getPlayer(uuid);
+		for (World world : Bukkit.getWorlds())
+			for (LivingEntity entity : world.getLivingEntities())
+				if (entity.getUniqueId().equals(uuid))
+					return Optional.of(entity);
+		return Optional.empty();
+	}
+
+	/** Returns the player associated with the attribute node */
+	public final Optional<Player> getPlayer()
+	{
+		return Optional.ofNullable(Bukkit.getPlayer(uuid));
 	}
 
 	// ///////////////////////////////////////////////////////////////////////
 
-	/** Removes all modifiers from the node */
+	/** Removes all modifiers from the attribute node */
 	public final void clear()
 	{
 		modifiers.clear();
 	}
 
-	/** Removes a modifier from the node */
-	public final void removeModifier(AttributeModifier modifier)
+	/** Removes a modifier from the attribute node */
+	public final void removeModifier(Modifier modifier)
 	{
-		if (modifier != null)
-			removeModifier(modifier.getName());
+		if (modifier == null)
+			throw new IllegalArgumentException("Modifier cannot be null");
+		removeModifier(modifier.getID());
 	}
 
-	/** Removes a modifier from the node */
-	public final void removeModifier(String modifier)
+	/** Removes a modifier from the attribute node */
+	public final void removeModifier(String id)
 	{
-		modifiers.remove(modifier);
+		if (id == null)
+			throw new IllegalArgumentException("Identifier cannot be null");
+		modifiers.remove(id);
 	}
 
-	/** Returns the modifier with the given name, or null if it doesn't exist */
-	public final AttributeModifier getModifier(String modifier)
+	/** Returns the modifier with the given id; will create the modifier if it does not exist */
+	public final Modifier getModifier(String id)
 	{
-		AttributeModifier m = modifiers.get(modifier);
-		if (m != null)
-			return m;
-		m = new AttributeModifier(modifier);
-		modifiers.put(modifier, m);
-		return m;
+		if (id == null)
+			throw new IllegalArgumentException("Identifier cannot be null");
+		if (modifiers.containsKey(id))
+			return modifiers.get(id);
+		Modifier modifier = new Modifier(id);
+		modifiers.put(id, modifier);
+		return modifier;
 	}
 
-	/** Returns all the modifiers associated with the attribute */
-	public final Collection<AttributeModifier> getModifiers()
+	/** Returns all the modifiers associated with the attribute node */
+	public final Collection<Modifier> getModifiers()
 	{
-		Collection<AttributeModifier> modifiers = new ArrayList<AttributeModifier>(
-				this.modifiers.size());
-		for (Entry<String, AttributeModifier> entry : this.modifiers.entrySet())
-			modifiers.add(entry.getValue());
-		return modifiers;
+		return Collections.unmodifiableCollection(modifiers.values());
 	}
 
-	/** Returns true if there are no modifiers stored within the attribute */
+	/** Returns true if there are no modifiers stored within the attribute node */
 	public final boolean isEmpty()
 	{
 		return modifiers.isEmpty();
@@ -94,88 +106,93 @@ public class Attribute
 
 	// ///////////////////////////////////////////////////////////////////////
 
-	/** Sets the base value of the node */
+	/** Sets the various values for this attribute */
+	public final Attribute setValues(float base, float min, float max)
+	{
+		return setBaseValue(base).setMaxValue(min).setMaxValue(max);
+	}
+
+	/** Sets the base value of the attribute node */
 	public final Attribute setBaseValue(float baseValue)
 	{
 		this.baseValue = baseValue;
 		return this;
 	}
 
-	/** Returns the base value of the node */
+	/** Returns the base value of the attribute node */
 	public final float getBaseValue()
 	{
 		return baseValue;
 	}
 
-	/** Sets the minmium value of the node */
+	/** Sets the minmium value of the attribute node */
 	public final Attribute setMinValue(float minValue)
 	{
 		this.minValue = minValue;
 		return this;
 	}
 
-	/** Returns the minimum value of the node */
+	/** Returns the minimum value of the attribute node */
 	public final float getMinValue()
 	{
 		return minValue;
 	}
 
-	/** Sets the maximum value of the node */
+	/** Sets the maximum value of the attribute node */
 	public final Attribute setMaxValue(float maxValue)
 	{
 		this.maxValue = maxValue;
 		return this;
 	}
 
-	/** Returns the maximum value of the node */
+	/** Returns the maximum value of the attribute node */
 	public final float getMaxValue()
 	{
 		return maxValue;
 	}
 
-	/** Returns the total scale of the node */
+	/** Returns the total scale of the attribute node */
 	public final float getScale()
 	{
 		float totalScale = 1.0f;
-		for (Entry<String, AttributeModifier> entry : modifiers.entrySet())
-			totalScale *= 1.0f + entry.getValue().getScale();
+		for (Modifier modifier : modifiers.values())
+			totalScale *= modifier.getScale();
 		return totalScale;
 	}
 
-	/** Returns the total multiplier of the node */
+	/** Returns the total multiplier of the attribute node */
 	public final float getMultiplier()
 	{
 		float totalMultiplier = 0.0f;
-		for (Entry<String, AttributeModifier> entry : modifiers.entrySet())
-			totalMultiplier += entry.getValue().getMultiplier();
+		for (Modifier modifier : modifiers.values())
+			totalMultiplier += modifier.getMultiplier();
 		return totalMultiplier;
 	}
 
-	/** Returns the total flat value of the node */
+	/** Returns the total flat value of the attribute node */
 	public final float getFlat()
 	{
 		float totalFlat = 0.0f;
-		for (Entry<String, AttributeModifier> entry : modifiers.entrySet())
-			totalFlat += entry.getValue().getFlat();
+		for (Modifier modifier : modifiers.values())
+			totalFlat += modifier.getFlat();
 		return totalFlat;
 	}
 
-	/** Returns the final value of the node */
+	/** Returns the final value of the attribute node */
 	public final float getValue()
 	{
 		float totalScale = 1.0f;
 		float totalMultiplier = 0.0f;
 		float totalFlat = 0.0f;
 
-		for (Entry<String, AttributeModifier> entry : modifiers.entrySet())
+		for (Modifier modifier : modifiers.values())
 		{
-			AttributeModifier modifier = entry.getValue();
-			totalScale *= 1.0f + modifier.getScale();
+			totalScale *= modifier.getScale();
 			totalMultiplier += modifier.getMultiplier();
 			totalFlat += modifier.getFlat();
 		}
 
-		float value = totalScale * (baseValue * Math.max(0.0f, 1.0f + totalMultiplier) + totalFlat);
+		float value = totalScale * (totalFlat + baseValue * (1.0f + totalMultiplier));
 		return Math.max(minValue, Math.min(maxValue, value));
 	}
 }

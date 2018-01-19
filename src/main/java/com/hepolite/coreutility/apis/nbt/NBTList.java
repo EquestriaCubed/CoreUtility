@@ -48,12 +48,16 @@ public class NBTList
 			addBoolean((boolean) value);
 		else if (value instanceof Byte)
 			addByte((byte) value);
+		else if (value instanceof byte[])
+			addByteArray((byte[]) value);
 		else if (value instanceof Double)
 			addDouble((double) value);
 		else if (value instanceof Float)
 			addFloat((float) value);
 		else if (value instanceof Integer)
 			addInt((int) value);
+		else if (value instanceof int[])
+			addIntArray((int[]) value);
 		else if (value instanceof NBTList)
 			addList((NBTList) value);
 		else if (value instanceof Long)
@@ -110,6 +114,27 @@ public class NBTList
 	{
 		if (getField(index) == NBTField.BYTE)
 			return (byte) getValue(index, RNBTTag.Byte.nmsAsByte);
+		return def;
+	}
+
+	/** Stores the given value in the tag */
+	public final void addByteArray(byte[] value)
+	{
+		fields.add(NBTField.BYTE_ARRAY);
+		RNBTTag.List.nmsAdd.invoke(handle, RNBTTag.ByteArray.nmsClass.create(value));
+	}
+
+	/** Retrieves the given value in the tag under the given index */
+	public final byte[] getByteArray(int index)
+	{
+		return getByteArray(index, new byte[] {});
+	}
+
+	/** Retrieves the given value in the tag under the given index; returns the default value if the index was not found, or an invalid type was found */
+	public final byte[] getByteArray(int index, byte[] def)
+	{
+		if (getField(index) == NBTField.BYTE_ARRAY)
+			return (byte[]) getValue(index, RNBTTag.ByteArray.nmsAsByteArray);
 		return def;
 	}
 
@@ -173,6 +198,27 @@ public class NBTList
 	{
 		if (getField(index) == NBTField.INT)
 			return (int) getValue(index, RNBTTag.Int.nmsAsInt);
+		return def;
+	}
+
+	/** Stores the given value in the tag */
+	public final void addIntArray(int[] value)
+	{
+		fields.add(NBTField.INT_ARRAY);
+		RNBTTag.List.nmsAdd.invoke(handle, RNBTTag.IntArray.nmsClass.create(value));
+	}
+
+	/** Retrieves the given value in the tag under the given index */
+	public final int[] getIntArray(int index)
+	{
+		return getIntArray(index, new int[] {});
+	}
+
+	/** Retrieves the given value in the tag under the given index; returns the default value if the index was not found, or an invalid type was found */
+	public final int[] getIntArray(int index, int[] def)
+	{
+		if (getField(index) == NBTField.INT_ARRAY)
+			return (int[]) getValue(index, RNBTTag.IntArray.nmsAsIntArray);
 		return def;
 	}
 

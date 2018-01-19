@@ -17,25 +17,29 @@ import com.hepolite.coreutility.log.Log;
 
 public abstract class Instruction
 {
-	private String name = "Unnamed_Instruction";
-	private String permission = null;
-	private int validArgumentNumbers[] = null;
+	private final String name;
+	private final String permission;
+	private final int validArgumentNumbers[];
 
-	private Map<String, Instruction> subInstructions = new TreeMap<String, Instruction>();
+	private final Map<String, Instruction> subInstructions = new TreeMap<String, Instruction>();
 	private Instruction parentInstruction = null;
-	
+
 	private boolean isPlayerOnly = false;
 
 	/** Name is the name of the instruction, argumentCount can be -1 for any number of arguments, otherwise that many arguments are required for the instruction to be valid */
 	protected Instruction(String name, int argumentCount)
 	{
-		this(name, null, new int[] { argumentCount });
+		this(name, null, new int[] {
+			argumentCount
+		});
 	}
 
 	/** Name is the name of the instruction, permission is the permission the user needs, argumentCount can be -1 for any number of arguments, otherwise that many arguments are required for the instruction to be valid */
 	protected Instruction(String name, String permission, int argumentCount)
 	{
-		this(name, permission, new int[] { argumentCount });
+		this(name, permission, new int[] {
+			argumentCount
+		});
 	}
 
 	/** Name is the name of the instruction, argumentCount can be -1 for any number of arguments, otherwise that many arguments are required for the instruction to be valid */

@@ -80,7 +80,10 @@ public class HungerHandler extends CoreHandler
 	/** Returns the group the player is in */
 	public final Group getPlayerGroup(Player player)
 	{
-		return players.get(player.getUniqueId());
+		if (players.containsKey(player.getUniqueId()))
+			return players.get(player.getUniqueId());
+		else
+			return getGroup("Default");
 	}
 
 	// //////////////////////////////////////////////////////////////////////

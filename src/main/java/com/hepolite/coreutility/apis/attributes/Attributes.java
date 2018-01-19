@@ -4,7 +4,7 @@ import com.hepolite.coreutility.apis.damage.DamageClass;
 import com.hepolite.coreutility.apis.damage.DamageType;
 
 /** Built-in attribute types; functionality might not be specified within the core, but may be specified in other plugins */
-public class AttributeType
+public class Attributes
 {
 	// Generic entity attributes
 	public final static String ATTACK_ALL = "ATTACK_ALL";
@@ -17,7 +17,7 @@ public class AttributeType
 	// Player-only attributes
 	public final static String AIR_MAX = "AIR_MAX";
 	public final static String HUNGER_MAX = "HUNGER_MAX";
-	public final static String HUNGER_DECREASE = "HUNGER_DECREASE";
+	public final static String HUNGER_RATEOFCHANGE = "HUNGER_RATEOFCHANGE";
 	public final static String SPEED_FLY = "SPEED_FLY";
 	public final static String SPEED_WALK = "SPEED_WALK";
 }

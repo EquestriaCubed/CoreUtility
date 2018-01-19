@@ -1,5 +1,7 @@
 package com.hepolite.coreutility.event.events;
 
+import java.util.Optional;
+
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -28,21 +30,21 @@ public class DamageEvent extends Event implements Cancellable
 	}
 
 	/** Returns the target as a player, or null if the targer is not a player */
-	public final Player getTargetAsPlayer()
+	public final Optional<Player> getTargetAsPlayer()
 	{
-		return (target instanceof Player) ? (Player) target : null;
+		return (target instanceof Player) ? Optional.of((Player) target) : Optional.empty();
 	}
 
 	/** Returns the attacker */
-	public final LivingEntity getAttacker()
+	public final Optional<LivingEntity> getAttacker()
 	{
-		return attacker;
+		return Optional.ofNullable(attacker);
 	}
 
 	/** Returns the attacker as a player, or null if the attacker is not a player */
-	public final Player getAttackerAsPlayer()
+	public final Optional<Player> getAttackerAsPlayer()
 	{
-		return (attacker instanceof Player) ? (Player) attacker : null;
+		return (attacker instanceof Player) ? Optional.of((Player) attacker) : Optional.empty();
 	}
 
 	/** Returns the damage */

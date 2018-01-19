@@ -66,7 +66,7 @@ public class BlockHandler extends CoreHandler
 		return true;
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
 	public final void onBlockPlace(BlockPlaceEvent event)
 	{
 		if (isTestEvent)

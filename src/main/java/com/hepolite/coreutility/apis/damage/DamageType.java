@@ -19,7 +19,7 @@ public enum DamageType
 	/** Damage dealt to those disrespecting the sudden stop at the end of a fall */
 	FALL(DamageClass.PHYSICAL, DamageCause.FALL, 0.0f, 0.0f, 0.25f, 0.5f),
 
-	/** Damage dealt to those who got too close to fire */
+	/** Damage dealt to those who got hit by a fire effect */
 	FIRE(DamageClass.ELEMENTAL, DamageCause.FIRE, 0.0f, 0.0f, 0.0f, 0.0f),
 
 	/** Damage dealt to those who got too distant from fire */

@@ -1,5 +1,6 @@
 package com.hepolite.coreutility.apis.nbt;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -43,12 +44,16 @@ public class NBTTag
 			setBoolean(key, (boolean) value);
 		else if (value instanceof Byte)
 			setByte(key, (byte) value);
+		else if (value instanceof byte[])
+			setByteArray(key, (byte[]) value);
 		else if (value instanceof Double)
 			setDouble(key, (double) value);
 		else if (value instanceof Float)
 			setFloat(key, (float) value);
 		else if (value instanceof Integer)
 			setInt(key, (int) value);
+		else if (value instanceof int[])
+			setIntArray(key, (int[]) value);
 		else if (value instanceof NBTList)
 			setList(key, (NBTList) value);
 		else if (value instanceof Long)
@@ -105,6 +110,27 @@ public class NBTTag
 	{
 		if (getField(key) == NBTField.BYTE)
 			return (byte) RNBTTag.Compound.nmsGetByte.invoke(handle, key);
+		return def;
+	}
+
+	/** Stores the given value in the tag under the given key */
+	public final void setByteArray(String key, byte[] value)
+	{
+		fields.put(key, NBTField.BYTE_ARRAY);
+		RNBTTag.Compound.nmsSetByteArray.invoke(handle, key, value);
+	}
+
+	/** Retrieves the given value in the tag under the given key */
+	public final byte[] getByteArray(String key)
+	{
+		return getByteArray(key, new byte[] {});
+	}
+
+	/** Retrieves the given value in the tag under the given key; returns the default value if the key was not found, or an invalid type was found */
+	public final byte[] getByteArray(String key, byte[] def)
+	{
+		if (getField(key) == NBTField.BYTE_ARRAY)
+			return (byte[]) RNBTTag.Compound.nmsGetByteArray.invoke(handle, key);
 		return def;
 	}
 
@@ -168,6 +194,27 @@ public class NBTTag
 	{
 		if (getField(key) == NBTField.INT)
 			return (int) RNBTTag.Compound.nmsGetInt.invoke(handle, key);
+		return def;
+	}
+
+	/** Stores the given value in the tag under the given key */
+	public final void setIntArray(String key, int[] value)
+	{
+		fields.put(key, NBTField.INT_ARRAY);
+		RNBTTag.Compound.nmsSetIntArray.invoke(handle, key, value);
+	}
+
+	/** Retrieves the given value in the tag under the given key */
+	public final int[] getIntArray(String key)
+	{
+		return getIntArray(key, new int[] {});
+	}
+
+	/** Retrieves the given value in the tag under the given key; returns the default value if the key was not found, or an invalid type was found */
+	public final int[] getIntArray(String key, int[] def)
+	{
+		if (getField(key) == NBTField.INT_ARRAY)
+			return (int[]) RNBTTag.Compound.nmsGetIntArray.invoke(handle, key);
 		return def;
 	}
 
@@ -286,7 +333,7 @@ public class NBTTag
 		RNBTTag.Compound.nmsRemove.invoke(handle, key);
 		fields.remove(key);
 	}
-	
+
 	/** Returns true if the given key exists in the tag */
 	public final boolean has(String key)
 	{
@@ -296,12 +343,9 @@ public class NBTTag
 	/** Returns a set of all keys stored in the tag; this will never return null */
 	public final Set<String> getKeys()
 	{
-		Set<String> set = new HashSet<String>();
 		@SuppressWarnings("unchecked")
 		Set<String> keys = handle == null ? null : (Set<String>) RNBTTag.Compound.nmsGetKeys.invoke(handle);
-		if (keys != null)
-			set.addAll(keys);
-		return set;
+		return Collections.unmodifiableSet(keys == null ? new HashSet<String>() : keys);
 	}
 
 	/** Returns the type of the value stored under the given key; returns null if there was no value stored under the key */

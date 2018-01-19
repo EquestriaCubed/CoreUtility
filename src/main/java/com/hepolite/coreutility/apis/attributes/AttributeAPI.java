@@ -1,31 +1,26 @@
 package com.hepolite.coreutility.apis.attributes;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.entity.LivingEntity;
 
 public class AttributeAPI
 {
-	private final static Map<String, Map<UUID, Attribute>> maps = new HashMap<String, Map<UUID, Attribute>>();
+	private static final Map<String, Map<UUID, Attribute>> maps = new HashMap<String, Map<UUID, Attribute>>();
 
 	/** Ticks the API */
-	public final static void onTick(int tick)
+	public static final void onTick(int tick)
 	{
 		if (tick % 20 != 5)
 			return;
 
-		// Collection<Attribute> emptyAttributes = new ArrayList<Attribute>();
-		for (Entry<String, Map<UUID, Attribute>> e : maps.entrySet())
-		{
-			for (Entry<UUID, Attribute> entry : e.getValue().entrySet())
-			{
-				Attribute attribute = entry.getValue();
-				for (AttributeModifier modifier : attribute.getModifiers())
+		for (Map<UUID, Attribute> map : maps.values())
+			for (Attribute attribute : map.values())
+				for (Modifier modifier : attribute.getModifiers())
 				{
 					if (modifier.getLifetime() == -1)
 						continue;
@@ -33,80 +28,103 @@ public class AttributeAPI
 					if (modifier.getLifetime() <= 0)
 						attribute.removeModifier(modifier);
 				}
-				// if (attribute.isEmpty())
-				// emptyAttributes.add(attribute);
-			}
-		}
-		// for (Attribute attribute : emptyAttributes)
-		// remove(attribute);
 	}
 
-	/** Returns the node map for the given player; will return a generic map if null is specified */
-	private final static Map<UUID, Attribute> getMap(String name)
+	/** Returns the node map for the given player; creates the map if it does not already exist */
+	private static final Map<UUID, Attribute> getMap(String id)
 	{
-		Map<UUID, Attribute> map = maps.get(name);
-		if (map != null)
-			return map;
-		map = new HashMap<UUID, Attribute>();
-		maps.put(name, map);
+		if (id == null)
+			throw new IllegalArgumentException("Identifier cannot be null");
+		if (maps.containsKey(id))
+			return maps.get(id);
+		Map<UUID, Attribute> map = new HashMap<UUID, Attribute>();
+		maps.put(id, map);
 		return map;
 	}
 
 	// /////////////////////////////////////////////////////////////////
 
-	/** Returns an attribute with the given name */
-	public final static Attribute get(String name)
+	/** Returns an attribute node with the given id, under the given entity; creates the attribute if it does not exist */
+	public static final Attribute get(LivingEntity entity, String id)
 	{
-		return get((UUID) null, name);
+		if (entity == null)
+			throw new IllegalArgumentException("Entity cannot be null");
+		return get(entity.getUniqueId(), id);
 	}
 
-	/** Returns an attribute with the given name, under the given entity; returns a generic node if the entity is null */
-	public final static Attribute get(LivingEntity entity, String name)
+	/** Returns an attribute node with the given id, under the given uuid; creates the attribute if it does not exist */
+	public static final Attribute get(UUID uuid, String id)
 	{
-		return get(entity == null ? null : entity.getUniqueId(), name);
-	}
-
-	/** Returns an attribute with the given name, under the given uuid */
-	public final static Attribute get(UUID uuid, String name)
-	{
-		Map<UUID, Attribute> map = getMap(name);
-		Attribute node = map.get(uuid);
-		if (node != null)
-			return node;
-		node = new Attribute(name, uuid);
+		if (uuid == null || id == null)
+			throw new IllegalArgumentException("UUID or identifier cannot be null");
+		Map<UUID, Attribute> map = getMap(id);
+		if (map.containsKey(uuid))
+			return map.get(uuid);
+		Attribute node = new Attribute(id, uuid);
 		map.put(uuid, node);
 		return node;
 	}
 
-	/** Returns all attributes of the given attribute name */
-	public final static Collection<Attribute> getAttributes(String name)
+	/** Returns all attribute nodes of the given id under all entities */
+	public static final Collection<Attribute> getNodes(String id)
 	{
-		Map<UUID, Attribute> map = getMap(name);
-		Collection<Attribute> nodes = new ArrayList<Attribute>(map.size());
-		for (Entry<UUID, Attribute> entry : map.entrySet())
-			nodes.add(entry.getValue());
-		return nodes;
+		if (id == null)
+			throw new IllegalArgumentException("Identifier cannot be null");
+		return Collections.unmodifiableCollection(getMap(id).values());
+	}
+
+	/** Returns true if the given entity has an attribute of the given id */
+	public static final boolean has(LivingEntity entity, String id)
+	{
+		if (entity == null)
+			throw new IllegalArgumentException("Entity cannot be null");
+		return has(entity.getUniqueId(), id);
+	}
+
+	/** Returns true if the given uuid has an attribute of the given id */
+	public static final boolean has(UUID uuid, String id)
+	{
+		if (uuid == null || id == null)
+			throw new IllegalArgumentException("UUID or identifier cannot be null");
+		return getMap(id).containsKey(uuid);
 	}
 
 	/** Removes the given attribute from the system */
-	public final static void remove(Attribute node)
+	public static final void remove(Attribute attribute)
 	{
-		if (node == null)
-			return;
-		remove(node.getUUID(), node.getName());
+		if (attribute == null)
+			throw new IllegalArgumentException("Attribute cannot be null");
+		remove(attribute.getUUID(), attribute.getID());
 	}
 
 	/** Removes the given attribute for the given entity from the system */
-	public final static void remove(LivingEntity entity, String name)
+	public static final void remove(LivingEntity entity, String id)
 	{
-		remove(entity == null ? null : entity.getUniqueId(), name);
+		if (entity == null)
+			throw new IllegalArgumentException("Entity or attribute cannot be null");
+		remove(entity.getUniqueId(), id);
 	}
 
 	/** Removes the given attribute for the given uuid from the system */
-	public final static void remove(UUID uuid, String name)
+	public static final void remove(UUID uuid, String id)
 	{
-		Map<UUID, Attribute> map = maps.get(name);
-		if (map != null)
-			map.remove(uuid);
+		if (uuid == null || id == null)
+			throw new IllegalArgumentException("UUID or attribute cannot be null");
+		getMap(id).remove(uuid);
+	}
+
+	/** Returns the cumulative effect of the given attribute nodes on the given value */
+	public static final float getValue(float base, Attribute... attributes)
+	{
+		float scale = 1.0f;
+		float multiplier = 0.0f;
+		float flat = 0.0f;
+		for (Attribute attribute : attributes)
+		{
+			scale *= attribute.getScale();
+			multiplier += attribute.getMultiplier();
+			flat += attribute.getFlat();
+		}
+		return scale * (flat + base * (1.0f + multiplier));
 	}
 }

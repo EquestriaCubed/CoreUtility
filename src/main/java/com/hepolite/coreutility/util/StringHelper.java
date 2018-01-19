@@ -17,16 +17,28 @@ public class StringHelper
 		}
 	}
 
-	/** Converts the given string to an integer */
-	public static final int asInt(String string)
+	/** Converts the given string to a byte */
+	public static final byte asByte(String string)
 	{
-		return asInt(string, 0);
+		return asByte(string, (byte) 0);
 	}
 
 	/** Converts the given string to an integer */
-	public static final int asInt(String string, int def)
+	public static final byte asByte(String string, byte def)
 	{
-		return asT(string, def, Integer::parseInt);
+		return asT(string, def, Byte::parseByte);
+	}
+
+	/** Converts the given string to a float */
+	public static final double asDouble(String string)
+	{
+		return asDouble(string, 0.0);
+	}
+
+	/** Converts the given string to a float */
+	public static final double asDouble(String string, double def)
+	{
+		return asT(string, def, Double::parseDouble);
 	}
 
 	/** Converts the given string to a float */
@@ -39,6 +51,18 @@ public class StringHelper
 	public static final float asFloat(String string, float def)
 	{
 		return asT(string, def, Float::parseFloat);
+	}
+
+	/** Converts the given string to an integer */
+	public static final int asInt(String string)
+	{
+		return asInt(string, 0);
+	}
+
+	/** Converts the given string to an integer */
+	public static final int asInt(String string, int def)
+	{
+		return asT(string, def, Integer::parseInt);
 	}
 
 	/** Converts the string to a string where the first letter in every word is capitalized */

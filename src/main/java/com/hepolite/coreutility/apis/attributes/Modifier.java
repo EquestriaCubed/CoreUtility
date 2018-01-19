@@ -1,8 +1,8 @@
 package com.hepolite.coreutility.apis.attributes;
 
-public class AttributeModifier
+public class Modifier
 {
-	private final String name;
+	private final String id;
 
 	private float multiplier = 0.0f;	// All multipliers are added together, plus one
 	private float flat = 0.0f;			// All flat values are added together, then added to the product of the base value and the multipliers
@@ -10,19 +10,25 @@ public class AttributeModifier
 
 	private int lifetime = -1;			// The lifetime of the modifier, measured in seconds; use -1 for infinite lifetime
 
-	public AttributeModifier(String name)
+	public Modifier(String id)
 	{
-		this.name = name;
+		this.id = id;
 	}
 
 	/** Returns the name of the modifier */
-	public final String getName()
+	public final String getID()
 	{
-		return name;
+		return id;
+	}
+
+	/** Sets the modifier values */
+	public final Modifier setValues(float scale, float multiplier, float flat)
+	{
+		return setScale(scale).setMultiplier(multiplier).setFlat(flat);
 	}
 
 	/** Sets the scale of the modifier */
-	public final AttributeModifier setScale(float scale)
+	public final Modifier setScale(float scale)
 	{
 		this.scale = scale;
 		return this;
@@ -35,7 +41,7 @@ public class AttributeModifier
 	}
 
 	/** Sets the scale of the modifier */
-	public final AttributeModifier setMultiplier(float multiplier)
+	public final Modifier setMultiplier(float multiplier)
 	{
 		this.multiplier = multiplier;
 		return this;
@@ -48,7 +54,7 @@ public class AttributeModifier
 	}
 
 	/** Sets the scale of the modifier */
-	public final AttributeModifier setFlat(float flat)
+	public final Modifier setFlat(float flat)
 	{
 		this.flat = flat;
 		return this;
@@ -61,7 +67,7 @@ public class AttributeModifier
 	}
 
 	/** Sets the lifetime of the modifier, measured in seconds; -1 for infinite lifetime, otherwise the modifier will live for the specified number of seconds */
-	public final AttributeModifier setLifetime(int lifetime)
+	public final Modifier setLifetime(int lifetime)
 	{
 		this.lifetime = lifetime;
 		return this;

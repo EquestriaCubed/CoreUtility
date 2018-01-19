@@ -8,7 +8,7 @@ import org.bukkit.event.Event;
 
 import com.hepolite.coreutility.apis.attributes.Attribute;
 import com.hepolite.coreutility.apis.attributes.AttributeAPI;
-import com.hepolite.coreutility.apis.attributes.AttributeType;
+import com.hepolite.coreutility.apis.attributes.Attributes;
 import com.hepolite.coreutility.event.events.PlayerExhaustionChangeEvent;
 import com.hepolite.coreutility.event.events.PlayerHungerChangeEvent;
 import com.hepolite.coreutility.event.events.PlayerSaturationChangeEvent;
@@ -28,7 +28,7 @@ public class Node
 		this.saturation = hunger;
 		this.exhaustion = 0.0f;
 
-		AttributeAPI.get(uuid, AttributeType.HUNGER_MAX).setBaseValue(100.0f);
+		AttributeAPI.get(uuid, Attributes.HUNGER_MAX).setBaseValue(100.0f);
 	}
 
 	/** Resets the node to the initial values */
@@ -72,7 +72,7 @@ public class Node
 	/** Returns the max hunger the player can have */
 	public final float getMaxHunger()
 	{
-		return AttributeAPI.get(uuid, AttributeType.HUNGER_MAX).getValue();
+		return AttributeAPI.get(uuid, Attributes.HUNGER_MAX).getValue();
 	}
 
 	/** Returns the total hunger points and saturation that the player has remaining */
@@ -117,7 +117,7 @@ public class Node
 		{
 			if (event.getHungerChange() < 0.0f)
 			{
-				Attribute attribute = AttributeAPI.get(uuid, AttributeType.HUNGER_DECREASE);
+				Attribute attribute = AttributeAPI.get(uuid, Attributes.HUNGER_RATEOFCHANGE);
 				attribute.setBaseValue(event.getHungerChange());
 				event.setHungerChange(attribute.getValue());
 			}
@@ -144,7 +144,7 @@ public class Node
 		{
 			if (event.getSaturationChange() < 0.0f)
 			{
-				Attribute attribute = AttributeAPI.get(uuid, AttributeType.HUNGER_DECREASE);
+				Attribute attribute = AttributeAPI.get(uuid, Attributes.HUNGER_RATEOFCHANGE);
 				attribute.setBaseValue(event.getSaturationChange());
 				event.setSaturationChange(attribute.getValue());
 			}
